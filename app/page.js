@@ -2,7 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { questions, getProfile } from "@/lib/quiz-data";
+import {
+  questions,
+  getProfile,
+  interstitials,
+  liveActivity,
+  answerLabels,
+} from "@/lib/quiz-data";
 import {
   fbTrack,
   fbTrackCustom,
@@ -18,6 +24,7 @@ const NAME_AFTER = 3; // captura o nome depois da pergunta 3
 const STEP = {
   QUESTION: "question",
   FEEDBACK: "feedback",
+  INTERSTITIAL: "interstitial",
   NAME: "name",
   PROCESSING: "processing",
   COMMIT: "commit",
@@ -29,7 +36,7 @@ export default function Quiz() {
   const [step, setStep] = useState(STEP.QUESTION);
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [feedback, setFeedback] = useState("");
+  const [feedback, setFeedback] = useState(null);
   const [name, setName] = useState("");
   const [resumed, setResumed] = useState(false);
   const [exitShown, setExitShown] = useState(false);
@@ -93,7 +100,9 @@ export default function Quiz() {
   }, [exitShown, step, qIndex]);
 
   const q = questions[qIndex];
-  const progress = Math.round(((qIndex + (step === STEP.QUESTION ? 0 : 1)) / questions.length) * 100);
+  const progress = Math.round(
+    ((qIndex + (step === STEP.QUESTION ? 0 : 1)) / questions.length) * 100
+  );
 
   function answer(opt) {
     if (!startedRef.current) {
@@ -110,7 +119,18 @@ export default function Quiz() {
     setStep(STEP.FEEDBACK);
   }
 
+  // Depois do feedback: interstício de prova social (se houver) → depois segue.
   function afterFeedback() {
+    if (interstitials[q.id]) {
+      fbTrackCustom("interstitial_view", { after_question: q.id });
+      setStep(STEP.INTERSTITIAL);
+      return;
+    }
+    proceed();
+  }
+
+  // Captura o nome (na hora certa) e então avança.
+  function proceed() {
     if (qIndex + 1 === NAME_AFTER && !name) {
       setStep(STEP.NAME);
       return;
@@ -134,12 +154,18 @@ export default function Quiz() {
     advance();
   }
 
+  const showChrome = step !== STEP.PROCESSING;
+
   return (
     <main className="min-h-[100dvh] flex flex-col">
       <Header />
 
-      {step !== STEP.PROCESSING && (
-        <Progress value={step === STEP.FORM || step === STEP.COMMIT ? 100 : progress} />
+      {showChrome && (
+        <Progress
+          value={step === STEP.FORM || step === STEP.COMMIT ? 100 : progress}
+          qNumber={qIndex + 1}
+          total={questions.length}
+        />
       )}
 
       <div className="flex-1 flex items-start justify-center px-4 pb-10">
@@ -154,11 +180,18 @@ export default function Quiz() {
             <Question q={q} name={name} onAnswer={answer} />
           )}
           {step === STEP.FEEDBACK && (
-            <Feedback text={feedback} onNext={afterFeedback} />
+            <Feedback data={feedback} onNext={afterFeedback} />
+          )}
+          {step === STEP.INTERSTITIAL && (
+            <Interstitial data={interstitials[q.id]} onNext={proceed} />
           )}
           {step === STEP.NAME && <NameCapture onSubmit={submitName} />}
           {step === STEP.PROCESSING && (
-            <Processing onDone={() => setStep(STEP.COMMIT)} />
+            <Processing
+              answers={answers}
+              name={name}
+              onDone={() => setStep(STEP.COMMIT)}
+            />
           )}
           {step === STEP.COMMIT && (
             <Commit name={name} onNext={() => setStep(STEP.FORM)} />
@@ -169,12 +202,7 @@ export default function Quiz() {
         </div>
       </div>
 
-      {showExit && (
-        <ExitModal
-          name={name}
-          onStay={() => setShowExit(false)}
-        />
-      )}
+      {showExit && <ExitModal name={name} onStay={() => setShowExit(false)} />}
 
       <footer className="text-center text-xs text-black/35 pb-6 px-4">
         © 2026 Parto Sem Medo · Dr. Alberto Guimarães · CRM-SP 66026
@@ -187,7 +215,7 @@ export default function Quiz() {
 
 function Header() {
   return (
-    <header className="pt-6 pb-4 text-center px-4">
+    <header className="pt-6 pb-3 text-center px-4">
       <div className="inline-flex items-center gap-2 font-serif font-bold text-lg">
         <span className="w-7 h-7 rounded-full bg-rose text-white grid place-items-center text-sm">
           P
@@ -198,18 +226,55 @@ function Header() {
   );
 }
 
-function Progress({ value }) {
+/* Indicador de atividade "ao vivo" — SIMULADO. Plugar em dados reais depois. */
+function LivePill() {
+  const [n, setN] = useState(liveActivity.baseOnline);
+  useEffect(() => {
+    const id = setInterval(() => {
+      setN((prev) => {
+        const delta = Math.floor(Math.random() * 5) - 2; // -2..+2
+        const next = prev + delta;
+        return Math.min(
+          Math.max(next, liveActivity.baseOnline - 6),
+          liveActivity.baseOnline + 9
+        );
+      });
+    }, 3200);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="inline-flex items-center gap-2 text-xs bg-white rounded-full px-3 py-1.5 shadow-sm">
+      <span className="relative flex h-2 w-2">
+        <span className="absolute inline-flex h-full w-full rounded-full bg-[#5FBF6C] opacity-70 animate-ping" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#5FBF6C]" />
+      </span>
+      <span className="text-black/60 tabular-nums">
+        <strong className="text-black/75">{n}</strong> gestantes analisando agora
+      </span>
+    </div>
+  );
+}
+
+function Progress({ value, qNumber, total }) {
+  const hint =
+    value >= 100
+      ? "Falta só um passo 🔥"
+      : value >= 70
+      ? `Você já revelou ${value}% do seu perfil — não pare agora!`
+      : value >= 40
+      ? "Você está indo muito bem 💛"
+      : "Ótimo começo!";
   return (
     <div className="px-4 max-w-[520px] mx-auto w-full mb-5">
       <div className="flex justify-between text-xs text-black/40 mb-1.5">
-        <span>{value}% concluído</span>
-        <span>
-          {value < 40 ? "Ótimo começo!" : value < 80 ? "Falta pouco!" : "Quase lá!"}
+        <span className="tabular-nums">
+          Pergunta {Math.min(qNumber, total)} de {total} · {value}%
         </span>
+        <span className="text-rose/90 font-medium">{hint}</span>
       </div>
-      <div className="h-1.5 bg-black/[0.06] rounded-full overflow-hidden">
+      <div className="h-2 bg-black/[0.06] rounded-full overflow-hidden">
         <div
-          className="h-full bg-rose rounded-full transition-all duration-500 ease-out"
+          className="h-full bg-rose rounded-full transition-all duration-700 ease-out progress-shine"
           style={{ width: `${value}%` }}
         />
       </div>
@@ -223,16 +288,15 @@ function Question({ q, name, onAnswer }) {
 
   function pick(opt, i) {
     setSel(i);
-    setTimeout(() => onAnswer(opt), 140);
+    setTimeout(() => onAnswer(opt), 160);
   }
 
   return (
     <div className="slide-in" key={q.id}>
       {q.id === 1 && (
         <div className="text-center mb-5">
-          <div className="inline-flex items-center gap-2 text-xs bg-white rounded-full px-3.5 py-1.5 shadow-sm mb-4">
-            <span className="text-rose">★</span>
-            <span className="text-black/60">+5.000 gestantes já fizeram</span>
+          <div className="flex justify-center mb-3">
+            <LivePill />
           </div>
           <h1 className="font-serif text-[26px] leading-tight font-bold mb-1.5">
             Descubra Seu Nível de{" "}
@@ -258,15 +322,18 @@ function Question({ q, name, onAnswer }) {
             <button
               key={i}
               onClick={() => pick(o, i)}
-              className={`opt ${sel === i ? "opt-active" : ""}`}
+              style={{ animationDelay: `${i * 55}ms` }}
+              className={`opt opt-stagger ${sel === i ? "opt-active" : ""}`}
             >
               {o.emoji && <span className="text-xl">{o.emoji}</span>}
               <span className="flex-1 text-[15px] leading-snug">{o.text}</span>
               <span
-                className={`w-5 h-5 rounded-full border-2 shrink-0 ${
+                className={`w-5 h-5 rounded-full border-2 shrink-0 grid place-items-center transition-colors ${
                   sel === i ? "border-rose bg-rose" : "border-black/15"
                 }`}
-              />
+              >
+                {sel === i && <span className="w-2 h-2 rounded-full bg-white" />}
+              </span>
             </button>
           ))}
         </div>
@@ -281,15 +348,19 @@ function Question({ q, name, onAnswer }) {
   );
 }
 
-function Feedback({ text, onNext }) {
+function Feedback({ data, onNext }) {
   useEffect(() => {
-    const t = setTimeout(onNext, 2800);
+    const t = setTimeout(onNext, 3000);
     return () => clearTimeout(t);
   }, [onNext]);
 
+  // Compatível com feedback antigo (string) e novo ({label, text}).
+  const label = typeof data === "object" && data ? data.label : "";
+  const text = typeof data === "object" && data ? data.text : data;
+
   return (
     <div className="card p-7 text-center fade-up">
-      <div className="w-14 h-14 rounded-full bg-[#E8F3E4] grid place-items-center mx-auto mb-4">
+      <div className="w-14 h-14 rounded-full bg-[#E8F3E4] grid place-items-center mx-auto mb-4 pop-in">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path
             d="M4 12.5l5 5L20 6.5"
@@ -300,12 +371,62 @@ function Feedback({ text, onNext }) {
           />
         </svg>
       </div>
-      <p className="text-[15px] leading-relaxed text-black/70">{text}</p>
-      <button
-        onClick={onNext}
-        className="mt-6 text-rose font-semibold text-sm"
-      >
+      {label && (
+        <p className="font-serif text-lg font-bold mb-2 leading-snug">{label}</p>
+      )}
+      <p className="text-[15px] leading-relaxed text-black/65">{text}</p>
+      <button onClick={onNext} className="mt-6 text-rose font-semibold text-sm">
         Continuar →
+      </button>
+    </div>
+  );
+}
+
+/* Tela de prova social / autoridade entre perguntas. */
+function Interstitial({ data, onNext }) {
+  useEffect(() => {
+    if (!data) onNext();
+  }, [data, onNext]);
+  if (!data) return null;
+
+  return (
+    <div className="card p-7 text-center fade-up">
+      <div className="text-4xl mb-3 pop-in">{data.icon}</div>
+
+      {data.type === "stat" && (
+        <>
+          <p className="font-serif text-lg font-bold mb-3">{data.headline}</p>
+          <div className="text-rose font-serif text-[38px] font-bold leading-none mb-2">
+            {data.big}
+          </div>
+          <p className="text-[15px] leading-relaxed text-black/65">{data.sub}</p>
+        </>
+      )}
+
+      {data.type === "testimonial" && (
+        <>
+          <p className="text-sm text-black/55 mb-4">{data.headline}</p>
+          <div className="text-amber-400 text-sm mb-2">★★★★★</div>
+          <p className="text-[15px] italic leading-relaxed text-black/70">
+            &ldquo;{data.quote}&rdquo;
+          </p>
+          <p className="text-sm font-semibold mt-3">— {data.author}</p>
+          <p className="text-xs text-black/40">{data.meta}</p>
+        </>
+      )}
+
+      {data.type === "authority" && (
+        <>
+          <p className="font-serif text-lg font-bold mb-3">{data.headline}</p>
+          <p className="text-[15px] leading-relaxed text-black/65">{data.body}</p>
+          <p className="mt-4 inline-block text-sm font-semibold text-rose bg-rose/5 rounded-xl px-4 py-2">
+            {data.highlight}
+          </p>
+        </>
+      )}
+
+      <button onClick={onNext} className="btn mt-6">
+        {data.cta}
       </button>
     </div>
   );
@@ -330,35 +451,54 @@ function NameCapture({ onSubmit }) {
         placeholder="Seu primeiro nome"
         className="w-full px-4 py-4 rounded-2xl border border-black/10 outline-none focus:border-rose text-center text-lg"
       />
-      <button
-        disabled={!ok}
-        onClick={() => onSubmit(v.trim())}
-        className="btn mt-4"
-      >
+      <button disabled={!ok} onClick={() => onSubmit(v.trim())} className="btn mt-4">
         Continuar →
       </button>
+      <p className="text-center text-xs text-black/35 mt-3">
+        🔒 Usamos seu nome só para personalizar. Nada de spam.
+      </p>
     </div>
   );
 }
 
-function Processing({ onDone }) {
+function Processing({ answers, name, onDone }) {
+  // A "montagem" cita as respostas da mãe → ilusão de personalização real.
+  const medo = answerLabels.medo[answers.medo] || "seu principal medo";
+  const tri = answerLabels.trimestre[answers.trimestre] || "sua fase";
+  const info = answerLabels.informacao[answers.informacao] || "seu momento";
   const steps = [
-    "Analisando suas respostas...",
-    "Identificando seu perfil...",
-    "Montando seu plano personalizado...",
+    "Lendo suas 7 respostas...",
+    `Cruzando "${medo}" com o "${tri}"...`,
+    `Considerando "${info}"...`,
+    "Selecionando o direcionamento do Dr. Alberto...",
+    `Montando o diagnóstico ${name ? `de ${name}` : "personalizado"}...`,
   ];
   const [n, setN] = useState(0);
   useEffect(() => {
     if (n >= steps.length) {
-      const t = setTimeout(onDone, 500);
+      const t = setTimeout(onDone, 550);
       return () => clearTimeout(t);
     }
-    const t = setTimeout(() => setN(n + 1), 900);
+    const t = setTimeout(() => setN(n + 1), 780);
     return () => clearTimeout(t);
   }, [n, onDone, steps.length]);
 
+  const pct = Math.min(Math.round((n / steps.length) * 100), 100);
+
   return (
     <div className="card p-8 mt-10">
+      <p className="text-center font-serif text-lg font-bold mb-1">
+        Analisando seu perfil...
+      </p>
+      <p className="text-center text-sm text-black/45 mb-6 tabular-nums">
+        {pct}% concluído
+      </p>
+      <div className="h-1.5 bg-black/[0.06] rounded-full overflow-hidden mb-6">
+        <div
+          className="h-full bg-rose rounded-full transition-all duration-500 ease-out"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
       <div className="space-y-4">
         {steps.map((s, i) => (
           <div
@@ -385,11 +525,17 @@ function Processing({ onDone }) {
 function Commit({ name, onNext }) {
   return (
     <div className="card p-7 text-center fade-up">
-      <h2 className="font-serif text-2xl font-bold mb-3">
-        {name ? `${name}, sua` : "Sua"} análise está pronta.
+      <div className="text-4xl mb-3 pop-in">🎯</div>
+      <h2 className="font-serif text-2xl font-bold mb-2">
+        {name ? `${name}, seu` : "Seu"} diagnóstico está pronto.
       </h2>
-      <p className="text-black/55 mb-7">Você quer recebê-la agora?</p>
-      <button onClick={onNext} className="btn">
+      <p className="text-black/55 mb-1">
+        Identificamos exatamente o que está entre você e um parto sem medo.
+      </p>
+      <p className="text-sm text-rose font-medium mb-7">
+        Quer receber sua análise completa agora?
+      </p>
+      <button onClick={onNext} className="btn pulse-cta">
         SIM, QUERO MINHA ANÁLISE →
       </button>
     </div>
@@ -451,11 +597,16 @@ function LeadForm({ name, answers, router }) {
 
   return (
     <div className="card p-6 fade-up">
+      <div className="text-center mb-4">
+        <span className="inline-block text-xs font-semibold bg-[#E8F3E4] text-[#3E8C4A] rounded-full px-3 py-1">
+          ✓ Diagnóstico pronto e reservado para você
+        </span>
+      </div>
       <h2 className="font-serif text-xl font-bold text-center mb-1.5">
         Para onde envio seu resultado?
       </h2>
       <p className="text-center text-sm text-black/45 mb-6">
-        Análise completa liberada na próxima tela.
+        Análise completa + direcionamento do Dr. Alberto liberados na próxima tela.
       </p>
 
       <div className="space-y-3">
@@ -484,7 +635,7 @@ function LeadForm({ name, answers, router }) {
       </div>
 
       <button disabled={!valid || sending} onClick={submit} className="btn mt-5">
-        {sending ? "Carregando..." : "VER MEU RESULTADO AGORA →"}
+        {sending ? "Liberando seu resultado..." : "VER MEU RESULTADO AGORA →"}
       </button>
       <p className="text-center text-xs text-black/40 mt-3">
         🔒 Seus dados estão seguros. Sem spam, prometido.
@@ -520,11 +671,13 @@ function ExitModal({ name, onStay }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/40 grid place-items-center px-5">
       <div className="card p-7 max-w-sm w-full text-center fade-up">
+        <div className="text-3xl mb-2">⏳</div>
         <h3 className="font-serif text-xl font-bold mb-2">
-          {name ? `${name}, falta` : "Falta"} só 1 minuto!
+          {name ? `${name}, não perca` : "Não perca"} seu diagnóstico!
         </h3>
         <p className="text-sm text-black/55 mb-6">
-          Sua análise personalizada está quase pronta. Quer continuar?
+          Você já respondeu quase tudo. Sua análise personalizada está a segundos
+          de ficar pronta — seria uma pena jogar fora agora.
         </p>
         <button onClick={onStay} className="btn">
           Continuar meu teste

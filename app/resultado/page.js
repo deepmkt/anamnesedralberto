@@ -152,8 +152,8 @@ export default function Resultado() {
             ))}
           </div>
           <div className="text-center mt-4 text-sm text-black/50">
-            ★★★★★ <strong className="text-black/70">4.9/5.0</strong> · centenas de
-            avaliações reais
+            ★★★★★ <strong className="text-black/70">5,0/5,0</strong> · 82 avaliações
+            verificadas no Doctoralia
           </div>
         </section>
 
@@ -177,11 +177,14 @@ export default function Resultado() {
           </div>
         </section>
 
-        {/* Depoimentos */}
+        {/* Depoimentos — avaliações reais e verificadas do Doctoralia */}
         <section className="mt-12">
-          <h3 className="font-serif text-xl font-bold text-center mb-5">
-            O que dizem quem já passou por isso
+          <h3 className="font-serif text-xl font-bold text-center mb-1.5">
+            O que as pacientes do Dr. Alberto dizem
           </h3>
+          <p className="text-center text-xs text-black/45 mb-5">
+            Avaliações reais e verificadas no Doctoralia
+          </p>
           <div className="space-y-3">
             {depoimentos.map((d, i) => (
               <div key={i} className="card p-5">
@@ -190,6 +193,9 @@ export default function Resultado() {
                   &ldquo;{d.texto}&rdquo;
                 </p>
                 <p className="text-sm font-semibold mt-3">— {d.autor}</p>
+                {d.fonte && (
+                  <p className="text-xs text-black/40 mt-0.5">{d.fonte}</p>
+                )}
               </div>
             ))}
           </div>

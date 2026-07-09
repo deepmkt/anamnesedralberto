@@ -64,3 +64,86 @@ body {
 .fade-up {
   animation: fadeUp 0.4s ease-out both;
 }
+
+/* Entrada escalonada das opções (o delay vem inline no componente) */
+@keyframes optIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.opt-stagger {
+  animation: optIn 0.35s ease-out both;
+}
+
+/* Pop de destaque (checkmark, ícones dos interstícios, emoji do commit) */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.pop-in {
+  animation: popIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Brilho que corre sobre a barra de progresso */
+.progress-shine {
+  position: relative;
+  overflow: hidden;
+}
+.progress-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: shine 2.2s ease-in-out infinite;
+}
+@keyframes shine {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Pulso sutil no CTA principal para atrair o toque */
+@keyframes pulseCta {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(240, 128, 128, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(240, 128, 128, 0);
+  }
+}
+.pulse-cta {
+  animation: pulseCta 1.8s ease-out infinite;
+}
+
+/* Respeita quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .opt-stagger,
+  .pop-in,
+  .pulse-cta,
+  .progress-shine::after,
+  .slide-in,
+  .fade-up {
+    animation: none !important;
+  }
+}
