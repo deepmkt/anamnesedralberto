@@ -7,6 +7,8 @@ import {
   depoimentos,
   faq,
   CHECKOUT_URL,
+  INSTAGRAM_URL,
+  DR_FOTO,
 } from "@/lib/quiz-data";
 import { fbTrack, fbTrackCustom, checkoutUrl } from "@/lib/track";
 
@@ -140,6 +142,31 @@ export default function Resultado() {
           <h3 className="font-serif text-center text-xl font-bold mb-5">
             Quem vai te guiar
           </h3>
+
+          <div className="card overflow-hidden mb-4 fade-up">
+            <img
+              src={DR_FOTO}
+              alt="Dr. Alberto Guimarães em consulta com uma gestante"
+              className="w-full h-56 object-cover object-top"
+            />
+            <div className="p-4 text-center">
+              <p className="font-serif text-lg font-bold">Dr. Alberto Guimarães</p>
+              <p className="text-xs text-black/50 mb-2">
+                Obstetra · CRM-SP 66026 · RQE-SP 14176
+              </p>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => fbTrackCustom("instagram_click")}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-rose"
+              >
+                <InstaIcon /> @dralbertoguimaraes
+                <span className="text-black/40 font-normal">· 47,9 mil</span>
+              </a>
+            </div>
+          </div>
+
           <div className="space-y-2.5">
             {AUTORIDADE.map((a, i) => (
               <div
@@ -180,22 +207,39 @@ export default function Resultado() {
         {/* Depoimentos — avaliações reais e verificadas do Doctoralia */}
         <section className="mt-12">
           <h3 className="font-serif text-xl font-bold text-center mb-1.5">
-            O que as pacientes do Dr. Alberto dizem
+            Histórias reais de quem foi cuidada por ele
           </h3>
           <p className="text-center text-xs text-black/45 mb-5">
-            Avaliações reais e verificadas no Doctoralia
+            Pacientes reais do Dr. Alberto
           </p>
           <div className="space-y-3">
             {depoimentos.map((d, i) => (
-              <div key={i} className="card p-5">
-                <div className="text-amber-400 text-sm mb-2">★★★★★</div>
+              <div key={i} className="card p-5 fade-up">
+                <div className="flex items-center gap-3 mb-3">
+                  {d.foto ? (
+                    <img
+                      src={d.foto}
+                      alt={d.autor}
+                      width="44"
+                      height="44"
+                      className="w-11 h-11 rounded-full object-cover shrink-0"
+                    />
+                  ) : (
+                    <span className="w-11 h-11 rounded-full bg-rose/10 text-rose grid place-items-center font-serif font-bold shrink-0">
+                      {d.autor.charAt(0)}
+                    </span>
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold leading-tight">{d.autor}</p>
+                    {d.fonte && (
+                      <p className="text-xs text-black/40 leading-tight">{d.fonte}</p>
+                    )}
+                    <div className="text-amber-400 text-xs mt-0.5">★★★★★</div>
+                  </div>
+                </div>
                 <p className="text-sm italic text-black/65 leading-relaxed">
                   &ldquo;{d.texto}&rdquo;
                 </p>
-                <p className="text-sm font-semibold mt-3">— {d.autor}</p>
-                {d.fonte && (
-                  <p className="text-xs text-black/40 mt-0.5">{d.fonte}</p>
-                )}
               </div>
             ))}
           </div>
@@ -280,6 +324,16 @@ export default function Resultado() {
         </footer>
       </div>
     </main>
+  );
+}
+
+function InstaIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="currentColor" strokeWidth="2" />
+      <circle cx="12" cy="12" r="4.5" stroke="currentColor" strokeWidth="2" />
+      <circle cx="17.5" cy="6.5" r="1.4" fill="currentColor" />
+    </svg>
   );
 }
 

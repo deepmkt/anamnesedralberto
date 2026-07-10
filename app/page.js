@@ -8,6 +8,7 @@ import {
   interstitials,
   liveActivity,
   answerLabels,
+  DR_FOTO,
 } from "@/lib/quiz-data";
 import {
   fbTrack,
@@ -298,13 +299,24 @@ function Question({ q, name, onAnswer }) {
           <div className="flex justify-center mb-3">
             <LivePill />
           </div>
-          <h1 className="font-serif text-[26px] leading-tight font-bold mb-1.5">
+          <h1 className="font-serif text-[26px] leading-tight font-bold mb-3">
             Descubra Seu Nível de{" "}
             <span className="text-rose">Preparo para o Parto</span>
           </h1>
-          <p className="text-sm text-black/50">
-            Criado pelo Dr. Alberto Guimarães, obstetra com +3.000 partos
-          </p>
+          <div className="inline-flex items-center gap-2.5 bg-white rounded-full pl-1 pr-4 py-1 shadow-sm fade-up">
+            <img
+              src={DR_FOTO}
+              alt="Dr. Alberto Guimarães"
+              width="40"
+              height="40"
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <span className="text-xs text-black/60 text-left leading-tight">
+              Criado pelo <strong className="text-black/75">Dr. Alberto Guimarães</strong>
+              <br />
+              obstetra · +3.000 partos
+            </span>
+          </div>
         </div>
       )}
 
@@ -391,7 +403,17 @@ function Interstitial({ data, onNext }) {
 
   return (
     <div className="card p-7 text-center fade-up">
-      <div className="text-4xl mb-3 pop-in">{data.icon}</div>
+      {data.foto ? (
+        <img
+          src={data.foto}
+          alt={data.author || "Paciente do Dr. Alberto"}
+          width="80"
+          height="80"
+          className="w-20 h-20 rounded-full object-cover mx-auto mb-3 ring-4 ring-rose/15 pop-in"
+        />
+      ) : (
+        <div className="text-4xl mb-3 pop-in">{data.icon}</div>
+      )}
 
       {data.type === "stat" && (
         <>
