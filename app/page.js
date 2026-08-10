@@ -19,7 +19,8 @@ import {
 } from "@/lib/track";
 
 const STORAGE = "psm_quiz_state";
-const NAME_AFTER = 3; // captura o nome depois da pergunta 3
+const NAME_AFTER = 1; // nome logo após a 1ª pergunta
+const PHONE_AFTER_QID = 4; // WhatsApp logo após o depoimento (interstício da Q4)
 
 /* ---------- Etapas ---------- */
 const STEP = {
@@ -27,10 +28,19 @@ const STEP = {
   FEEDBACK: "feedback",
   INTERSTITIAL: "interstitial",
   NAME: "name",
+  PHONE: "phone",
   PROCESSING: "processing",
   COMMIT: "commit",
   FORM: "form",
 };
+
+function maskPhone(v) {
+  const d = v.replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 2) return d;
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
 
 export default function Quiz() {
   const router = useRouter();
@@ -39,6 +49,7 @@ export default function Quiz() {
   const [answers, setAnswers] = useState({});
   const [feedback, setFeedback] = useState(null);
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [resumed, setResumed] = useState(false);
   const [exitShown, setExitShown] = useState(false);
   const [showExit, setShowExit] = useState(false);
@@ -58,6 +69,7 @@ export default function Quiz() {
         if (fresh && s.qIndex > 0) {
           setAnswers(s.answers || {});
           setName(s.name || "");
+          setPhone(s.phone || "");
           setQIndex(s.qIndex);
           setResumed(true);
           startedRef.current = true;
@@ -72,10 +84,10 @@ export default function Quiz() {
     try {
       localStorage.setItem(
         STORAGE,
-        JSON.stringify({ answers, name, qIndex, ts: Date.now() })
+        JSON.stringify({ answers, name, phone, qIndex, ts: Date.now() })
       );
     } catch {}
-  }, [answers, name, qIndex]);
+  }, [answers, name, phone, qIndex]);
 
   /* Exit intent (mobile: aba escondida | desktop: mouse sai pelo topo) */
   useEffect(() => {
@@ -130,10 +142,15 @@ export default function Quiz() {
     proceed();
   }
 
-  // Captura o nome (na hora certa) e então avança.
+  // Capturas na hora certa (nome → após Q1 | WhatsApp → após o depoimento da Q4).
   function proceed() {
     if (qIndex + 1 === NAME_AFTER && !name) {
       setStep(STEP.NAME);
+      return;
+    }
+    if (q.id === PHONE_AFTER_QID && !phone) {
+      fbTrackCustom("phone_view");
+      setStep(STEP.PHONE);
       return;
     }
     advance();
@@ -152,6 +169,21 @@ export default function Quiz() {
   function submitName(v) {
     setName(v);
     fbTrackCustom("name_captured");
+    advance();
+  }
+
+  function submitPhone(v) {
+    setPhone(v);
+    fbTrackCustom("phone_captured");
+    // Lead parcial vai AGORA pra base — mesmo que ela abandone, a SDR liga.
+    saveLead({
+      nome: name,
+      email: "",
+      whatsapp: v,
+      perfil: getProfile(answers),
+      respostas: { ...answers, etapa: "parcial_whatsapp" },
+      utms: getUtms(),
+    });
     advance();
   }
 
@@ -187,6 +219,9 @@ export default function Quiz() {
             <Interstitial data={interstitials[q.id]} onNext={proceed} />
           )}
           {step === STEP.NAME && <NameCapture onSubmit={submitName} />}
+          {step === STEP.PHONE && (
+            <PhoneCapture name={name} onSubmit={submitPhone} />
+          )}
           {step === STEP.PROCESSING && (
             <Processing
               answers={answers}
@@ -198,7 +233,7 @@ export default function Quiz() {
             <Commit name={name} onNext={() => setStep(STEP.FORM)} />
           )}
           {step === STEP.FORM && (
-            <LeadForm name={name} answers={answers} router={router} />
+            <LeadForm name={name} phone={phone} answers={answers} router={router} />
           )}
         </div>
       </div>
@@ -299,7 +334,7 @@ function Question({ q, name, onAnswer }) {
           <div className="flex justify-center mb-3">
             <LivePill />
           </div>
-          <h1 className="font-serif text-[26px] leading-tight font-bold mb-3">
+          <h1 className="font-serif text-[23px] sm:text-[26px] leading-tight font-bold mb-2.5">
             Descubra Seu Nível de{" "}
             <span className="text-rose">Preparo para o Parto</span>
           </h1>
@@ -362,7 +397,7 @@ function Question({ q, name, onAnswer }) {
 
 function Feedback({ data, onNext }) {
   useEffect(() => {
-    const t = setTimeout(onNext, 3000);
+    const t = setTimeout(onNext, 2400);
     return () => clearTimeout(t);
   }, [onNext]);
 
@@ -483,6 +518,41 @@ function NameCapture({ onSubmit }) {
   );
 }
 
+/* Captura do WhatsApp no meio do quiz — o lead vira contato da SDR mesmo se abandonar. */
+function PhoneCapture({ name, onSubmit }) {
+  const [v, setV] = useState("");
+  const ok = v.replace(/\D/g, "").length >= 10;
+  return (
+    <div className="card p-6 fade-up">
+      <div className="text-4xl text-center mb-3 pop-in">💬</div>
+      <h2 className="font-serif text-xl font-bold text-center mb-2">
+        {name ? `${name}, quer` : "Quer"} receber sua análise no WhatsApp?
+      </h2>
+      <p className="text-center text-sm text-black/55 mb-5 leading-relaxed">
+        Além do resultado completo, você ganha um{" "}
+        <strong>acompanhamento mais personalizado</strong> da equipe do Dr.
+        Alberto — direto no seu WhatsApp, sem custo.
+      </p>
+      <input
+        autoFocus
+        value={v}
+        onChange={(e) => setV(maskPhone(e.target.value))}
+        onKeyDown={(e) => e.key === "Enter" && ok && onSubmit(v)}
+        placeholder="(00) 00000-0000"
+        type="tel"
+        inputMode="numeric"
+        className="w-full px-4 py-4 rounded-2xl border border-black/10 outline-none focus:border-rose text-center text-[17px]"
+      />
+      <button disabled={!ok} onClick={() => onSubmit(v)} className="btn mt-4">
+        QUERO RECEBER NO WHATSAPP →
+      </button>
+      <p className="text-center text-xs text-black/35 mt-3">
+        🔒 Seu número fica seguro com a equipe do Dr. Alberto. Nada de spam.
+      </p>
+    </div>
+  );
+}
+
 function Processing({ answers, name, onDone }) {
   // A "montagem" cita as respostas da mãe → ilusão de personalização real.
   const medo = answerLabels.medo[answers.medo] || "seu principal medo";
@@ -564,16 +634,12 @@ function Commit({ name, onNext }) {
   );
 }
 
-function maskPhone(v) {
-  const d = v.replace(/\D/g, "").slice(0, 11);
-  if (d.length <= 2) return d;
-  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
-  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
-}
-
-function LeadForm({ name, answers, router }) {
-  const [f, setF] = useState({ nome: name || "", email: "", whatsapp: "" });
+function LeadForm({ name, phone, answers, router }) {
+  const [f, setF] = useState({
+    nome: name || "",
+    email: "",
+    whatsapp: phone || "",
+  });
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
@@ -602,7 +668,7 @@ function LeadForm({ name, answers, router }) {
       email: f.email,
       whatsapp: f.whatsapp,
       perfil,
-      respostas: answers,
+      respostas: { ...answers, etapa: "completo" },
       utms: getUtms(),
     });
 
@@ -675,7 +741,7 @@ function Field({ value, onChange, placeholder, type = "text", valid, error }) {
         placeholder={placeholder}
         type={type}
         inputMode={type === "tel" ? "numeric" : undefined}
-        className={`w-full px-4 py-4 rounded-2xl border outline-none transition-colors
+        className={`w-full px-4 py-4 rounded-2xl border outline-none transition-colors text-[16px]
           ${
             error
               ? "border-red-400"
