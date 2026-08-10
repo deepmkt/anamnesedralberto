@@ -102,7 +102,7 @@ export default function Resultado() {
 
   function buy() {
     fbTrack("InitiateCheckout", {
-      value: 497,
+      value: 297,
       currency: "BRL",
       content_name: "parto_sem_medo",
       perfil,
@@ -147,7 +147,7 @@ export default function Resultado() {
             <img
               src={DR_FOTO}
               alt="Dr. Alberto Guimarães em consulta com uma gestante"
-              className="w-full h-56 object-cover object-top"
+              className="w-full h-auto"
             />
             <div className="p-4 text-center">
               <p className="font-serif text-lg font-bold">Dr. Alberto Guimarães</p>
@@ -293,14 +293,14 @@ export default function Resultado() {
         <section className="mt-12">
           <div className="bg-rose/[0.07] rounded-3xl p-7 text-center">
             {!expired && (
-              <p className="text-black/40 line-through text-lg">De R$ 997,00</p>
+              <p className="text-black/40 line-through text-lg">De R$ 497,00</p>
             )}
             <p className="font-serif text-[42px] leading-none font-bold text-rose my-2">
-              12x <span className="text-[46px]">R$ 57,97</span>
+              R$ <span className="text-[46px]">297</span>
             </p>
-            <p className="text-sm text-black/55">ou R$ 497,00 à vista</p>
+            <p className="text-sm text-black/55">à vista ou em até 12x no cartão</p>
             <p className="inline-block mt-3 text-xs bg-[#E8F3E4] text-[#3E8C4A] rounded-full px-3 py-1.5 font-medium">
-              Menos de R$ 1,70 por dia para garantir sua segurança
+              Menos de R$ 1,00 por dia para garantir sua segurança
             </p>
             {expired && (
               <p className="mt-4 text-xs text-black/45">

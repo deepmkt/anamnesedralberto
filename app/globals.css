@@ -12,6 +12,14 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+body {
+  background-image: url("/img/bg-aquarela.jpg");
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
 @layer components {
   .card {
     @apply bg-white rounded-3xl shadow-[0_4px_24px_rgba(0,0,0,0.05)];
