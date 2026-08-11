@@ -39,13 +39,14 @@ export async function GET(request) {
   const r = (l) => l.respostas || {};
   const u = (l) => l.utms || {};
   const header =
-    "nome,email,whatsapp,perfil,gestacao,trimestre,medo,informacao,acompanhante,plano,investir,utm_source,utm_campaign,utm_content,data_hora";
+    "nome,email,whatsapp,perfil,etapa,gestacao,trimestre,medo,informacao,acompanhante,plano,investir,utm_source,utm_campaign,utm_content,data_hora";
   const rows = leads.map((l) =>
     [
       csvCell(l.nome),
       csvCell(l.email),
       csvCell(l.whatsapp),
       csvCell(l.perfil),
+      csvCell(r(l).etapa || "completo"),
       csvCell(r(l).gestacao),
       csvCell(r(l).trimestre),
       csvCell(r(l).medo),

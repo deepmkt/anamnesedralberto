@@ -10,7 +10,7 @@ import {
   INSTAGRAM_URL,
   DR_FOTO,
 } from "@/lib/quiz-data";
-import { fbTrack, fbTrackCustom, checkoutUrl } from "@/lib/track";
+import { fbTrack, fbTrackCustom, checkoutUrl, saveLead, getUtms } from "@/lib/track";
 
 const AUTORIDADE = [
   "Único médico brasileiro certificado pelo Instituto Michel Odent (Lyon, França)",
@@ -39,6 +39,7 @@ const DEADLINE_H = 72;
 
 export default function Resultado() {
   const [nome, setNome] = useState("");
+  const [contato, setContato] = useState({});
   const [perfil, setPerfil] = useState("A");
   const [left, setLeft] = useState(null);
   const [expired, setExpired] = useState(false);
@@ -53,6 +54,7 @@ export default function Resultado() {
         const r = JSON.parse(raw);
         p = r.perfil || "A";
         n = r.nome || "";
+        setContato({ whatsapp: r.whatsapp || "", email: r.email || "" });
       }
     } catch {}
     setPerfil(p);
@@ -101,6 +103,14 @@ export default function Resultado() {
   }, [perfil]);
 
   function buy() {
+    saveLead({
+      nome,
+      email: contato.email || "",
+      whatsapp: contato.whatsapp || "",
+      perfil,
+      respostas: { etapa: "chegou_checkout" },
+      utms: getUtms(),
+    });
     fbTrack("InitiateCheckout", {
       value: 297,
       currency: "BRL",

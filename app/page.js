@@ -675,7 +675,7 @@ function LeadForm({ name, phone, answers, router }) {
     try {
       localStorage.setItem(
         "psm_result",
-        JSON.stringify({ nome: f.nome, perfil, ts: Date.now() })
+        JSON.stringify({ nome: f.nome, whatsapp: f.whatsapp, email: f.email, perfil, ts: Date.now() })
       );
       localStorage.removeItem(STORAGE);
     } catch {}

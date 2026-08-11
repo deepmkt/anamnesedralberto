@@ -7,6 +7,12 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const EXPORT_KEY = process.env.LEADS_EXPORT_KEY;
 
+const ETAPAS = {
+  parcial_whatsapp: ["📱 Parcial (só WhatsApp)", "#FFF3D6"],
+  completo: ["✅ Quiz completo", "#DDF3DF"],
+  chegou_checkout: ["🔥 CHEGOU NO CHECKOUT", "#FFD6D6"],
+};
+
 const PERFIS = {
   A: "Gestante Ansiosa",
   B: "Gestante Defensora",
@@ -47,8 +53,9 @@ export async function GET(request) {
       const dt = l.created_at
         ? new Date(l.created_at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })
         : "";
+      const et = ETAPAS[l.respostas?.etapa] || ETAPAS.completo;
       return `<tr>
-        <td><strong>${esc(l.nome)}</strong></td>
+        <td><strong>${esc(l.nome)}</strong><br/><span class="etapa" style="background:${et[1]}">${et[0]}</span></td>
         <td>${esc(l.email)}</td>
         <td>${esc(l.whatsapp)}</td>
         <td><span class="perfil p${esc(l.perfil)}">${esc(l.perfil)} · ${esc(PERFIS[l.perfil] || "")}</span></td>
@@ -75,6 +82,7 @@ export async function GET(request) {
   th,td{text-align:left;padding:10px 14px;font-size:14px;border-bottom:1px solid #f0e8e0}
   th{background:#fff5f0;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#a66}
   .perfil{border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600;background:#eee}
+  .etapa{border-radius:999px;padding:1px 8px;font-size:11px;font-weight:600;color:#333}
   .pA{background:#FFE8CC}.pB{background:#FFD6D6}.pC{background:#E3E8FF}.pD{background:#DDF3DF}
   .wa{color:#1BA05B;font-weight:700;text-decoration:none}
   .dt{white-space:nowrap;color:#777;font-size:12px}
