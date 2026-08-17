@@ -157,6 +157,7 @@ const HTML = `<!DOCTYPE html>
     <a href="#perfilD">D · Quase Pronta</a>
     <a href="#etapas">Por etapa do CRM</a>
     <a href="#objecoes">Objeções</a>
+    <a href="#silencio">Quebra-silêncio</a>
     <a href="#cadencia">Follow-up</a>
   </nav>
 </header>
@@ -366,6 +367,73 @@ const HTML = `<!DOCTYPE html>
       <dt>Quero parto normal, mas posso acabar em cesárea…</dt>
       <dd>"E o curso te prepara para os DOIS cenários — inclusive cesárea humanizada e respeitosa, com contato pele a pele e você participando das decisões. Preparo não é sobre a via de parto, é sobre você ser protagonista em qualquer cenário."</dd>
     </dl>
+  </div>
+</section>
+
+
+<section id="silencio">
+  <h2>Quebra-silêncio — quando ela para de responder</h2>
+  <p class="sub">Cada ponto do funil tem um silêncio diferente — e uma pergunta certa para quebrá-lo. Regra: <strong>uma pergunta só</strong>, facílima de responder (número, sim/não ou escolha A/B), nunca cobrando ("sumida" é proibido), sempre com porta de saída digna.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">1 · Ignorou a primeira mensagem</h3>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Opção A — número fácil</span><span class="var">{nome}</span>, me responde só com um número: de 0 a 10, quanto o medo do parto te incomoda hoje?</div>
+      <div class="msg sdr"><span class="who">Opção B — escolha simples</span>Seu resultado do teste ficou pronto aqui comigo 💛 Prefere que eu te mande em <b>áudio de 1 minuto</b> ou em <b>3 linhas de texto</b>?</div>
+      <div class="msg sdr"><span class="who">Opção C — curiosidade</span>Posso te contar a única coisa do seu resultado que me chamou atenção? É rapidinho 🌷</div>
+    </div>
+    <p class="note">Por que funciona: responder "7" ou "áudio" custa zero esforço — e reabre a conversa.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">2 · Respondeu no início e sumiu no meio da conversa</h3>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Opção A — check honesto</span><span class="var">{nome}</span>, te perdi? 😅 Se eu falei algo que não fez sentido, me fala com sinceridade — prometo que ajusto.</div>
+      <div class="msg sdr"><span class="who">Opção B — gancho do trimestre</span>Me lembra uma coisa: quantas semanas você está mesmo? Quero te mandar uma dica específica da sua fase 🌷</div>
+      <div class="msg sdr"><span class="who">Opção C — loop aberto</span>Ia te contar o erro que 9 em cada 10 gestantes com o seu perfil cometem no 3º trimestre… ainda quer saber?</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">3 · Sumiu depois de receber o resultado (antes da oferta)</h3>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Opção A — validação</span>O que você achou do seu resultado, <span class="var">{nome}</span>? Bateu com o que você sente ou te surpreendeu?</div>
+      <div class="msg sdr"><span class="who">Opção B — próximo passo leve</span>Quer que eu te mostre <b>o primeiro passo</b> que o Dr. Alberto recomenda pro seu perfil? É de graça e dá pra fazer hoje.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">4 · Sumiu depois de ver o preço 💰</h3>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Opção A — direta e gentil</span><span class="var">{nome}</span>, vou te perguntar sem rodeio e prometo não insistir: foi o <b>valor</b>, o <b>momento</b>, ou ficou <b>dúvida se funciona pra você</b>? Me diz só a letra: V, M ou D 😊</div>
+      <div class="msg sdr"><span class="who">Opção B — parcelamento na frente</span>Só pra garantir que você viu: em 12x fica <b>R$30,68 por mês</b> — menos que um lanche por semana. Isso muda alguma coisa pra você?</div>
+      <div class="msg sdr"><span class="who">Opção C — risco zero</span>Uma coisa que talvez eu não tenha deixado claro: você tem <b>30 dias de garantia incondicional</b>. Entra, assiste tudo, e se não fizer sentido, devolvemos 100%. Com o risco todo do nosso lado, o que te seguraria?</div>
+    </div>
+    <p class="note">A opção A ("V, M ou D") tem taxa de resposta altíssima: ela só precisa digitar UMA letra — e te entrega a objeção real de bandeja.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">5 · Disse "vou pensar" / "vou falar com meu marido" e sumiu</h3>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Opção A — incluir o parceiro</span>E aí, conversaram? Se ele tiver qualquer dúvida, me manda que eu explico direto pra ele — inclusive o módulo do acompanhante, que é a parte que os papais mais elogiam 😉</div>
+      <div class="msg sdr"><span class="who">Opção B — material pronto</span><span class="var">{nome}</span>, fiz um resuminho de 5 linhas pra facilitar a conversa de vocês — quer que eu mande pra você só encaminhar pra ele?</div>
+      <div class="msg sdr"><span class="who">Opção C — prazo natural</span>Sem pressa da minha parte, tá? Só lembra que o prazo aqui quem dá é o bebê 🌷 Em que semana vocês pretendem decidir?</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">6 · Recebeu o link do checkout e não finalizou 🔥</h3>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Opção A — suporte técnico</span><span class="var">{nome}</span>, o link abriu direitinho? Às vezes o banco trava o cartão na primeira tentativa — se rolou isso, eu resolvo contigo em 2 minutos.</div>
+      <div class="msg sdr"><span class="who">Opção B — última dúvida</span>Você chegou até a última tela — isso me diz que você QUER se preparar 💛 O que faltou pra dar o último passo? Me conta que eu resolvo agora.</div>
+      <div class="msg sdr"><span class="who">Opção C — visão de futuro</span>Fecha os olhos e imagina: daqui a alguns meses, você na sala de parto <b>sabendo exatamente o que fazer</b>. É essa mulher que está a um clique. Vamos? pay.cakto.com.br/fodx2af</div>
+    </div>
+    <p class="note">Lead de checkout responde melhor a suporte prático (opção A) do que a pressão. Comece sempre por ela.</p>
+  </div>
+
+  <div class="alert">
+    <b>As 4 leis do quebra-silêncio</b>
+    1) Espaçe os toques (nunca dois no mesmo dia para o mesmo silêncio). 2) Alterne o TIPO de pergunta — se número não funcionou, tente escolha A/B. 3) Máximo 3 tentativas por etapa; depois, cai na cadência de follow-up normal. 4) Qualquer resposta dela — até um emoji — zera o contador e volta pro script do perfil.
   </div>
 </section>
 
