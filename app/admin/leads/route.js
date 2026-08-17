@@ -89,7 +89,7 @@ export async function GET(request) {
   @media(max-width:760px){th:nth-child(2),td:nth-child(2),th:nth-child(5),td:nth-child(5){display:none}}
 </style></head><body>
 <h1>📋 Leads ao vivo — Quiz Parto Sem Medo</h1>
-<div class="sub"><span class="count">${leads.length}</span> leads · atualiza sozinho a cada 30s · horário de Brasília</div>
+<div class="sub"><span class="count">${leads.length}</span> leads · atualiza sozinho a cada 30s · horário de Brasília · <a href="/admin/playbook?key=${esc(key)}" style="color:#D96562;font-weight:700">📖 Playbook da SDR</a></div>
 <table>
 <thead><tr><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Perfil</th><th>Origem</th><th>Quando</th><th></th></tr></thead>
 <tbody>${rows || `<tr><td colspan="7">Nenhum lead ainda.</td></tr>`}</tbody>
