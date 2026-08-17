@@ -99,6 +99,15 @@ const HTML = `<!DOCTYPE html>
   .msg .who{display:block; font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; opacity:.65; margin-bottom:3px; font-style:normal}
   .var{background:var(--rose-soft); color:var(--rose); border-radius:6px; padding:0 5px; font-weight:700; font-style:normal}
   .note{font-size:13px; color:var(--ink-3); margin:6px 0 0}
+  .msg.sdr{padding-bottom:30px}
+  button.copy{
+    position:absolute; right:8px; bottom:6px;
+    font:600 11px system-ui; letter-spacing:.04em;
+    color:var(--wa); background:transparent; border:1px solid var(--wa);
+    border-radius:999px; padding:2px 10px; cursor:pointer;
+  }
+  button.copy:hover{background:var(--wa); color:#fff}
+  button.copy:focus-visible{outline:2px solid var(--wa); outline-offset:2px}
 
   /* perfis */
   .perfil{border-radius:18px; border:1px solid var(--line); overflow:hidden; margin-bottom:26px; background:var(--card)}
@@ -384,6 +393,27 @@ const HTML = `<!DOCTYPE html>
 <footer>Parto Sem Medo · Dr. Alberto Guimarães — material interno da equipe de vendas · Oferta vigente: R$297 (de R$497) · Checkout: pay.cakto.com.br/fodx2af</footer>
 </div>
 
+<script>
+document.querySelectorAll(".msg.sdr").forEach(function(m){
+  var b=document.createElement("button");
+  b.className="copy"; b.type="button"; b.textContent="copiar";
+  b.addEventListener("click", async function(){
+    var t=[].slice.call(m.childNodes)
+      .filter(function(n){return !(n.nodeType===1&&(n.classList.contains("who")||n.classList.contains("copy")))})
+      .map(function(n){return n.textContent}).join("").trim();
+    try{
+      await navigator.clipboard.writeText(t);
+      b.textContent="copiado ✓";
+      setTimeout(function(){b.textContent="copiar"},1500);
+    }catch(e){
+      var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta);
+      ta.select(); document.execCommand("copy"); ta.remove();
+      b.textContent="copiado ✓"; setTimeout(function(){b.textContent="copiar"},1500);
+    }
+  });
+  m.appendChild(b);
+});
+</script>
 </body>
 </html>`;
 
