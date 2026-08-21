@@ -13,6 +13,22 @@ const ETAPAS = {
   chegou_checkout: ["🔥 CHEGOU NO CHECKOUT", "#FFD6D6"],
 };
 
+const SDR_NOME = "Bebeto";
+
+// Primeira mensagem pronta, personalizada por etapa do funil.
+function primeiraMensagem(lead) {
+  const primeiro = String(lead.nome || "").trim().split(/\s+/)[0] || "tudo bem";
+  const etapa = lead.respostas?.etapa;
+
+  if (etapa === "chegou_checkout") {
+    return `Oi ${primeiro}! Aqui é o ${SDR_NOME}, da equipe do Dr. Alberto Guimarães 💛 Vi que você chegou pertinho de garantir seu acesso ao Parto Sem Medo e algo te interrompeu. Antes de tudo: a página abriu certinho pra você? Às vezes o banco trava o cartão na primeira tentativa e eu resolvo isso contigo em 2 minutinhos.`;
+  }
+  if (etapa === "parcial_whatsapp") {
+    return `Oi ${primeiro}! Aqui é o ${SDR_NOME}, da equipe do Dr. Alberto Guimarães 💛 Vi que você começou sua análise de preparo pro parto e a vida interrompeu no meio — acontece direto por aqui 😅 Suas respostas ficaram salvinhas. Quer que eu te mande o link pra concluir? Faltam 3 perguntinhas, literalmente 1 minuto.`;
+  }
+  return `Oi ${primeiro}! Sou o ${SDR_NOME}, da equipe do Dr. Alberto Guimarães 💛 Sua análise ficou pronta e eu queria te entregar pessoalmente, porque seu perfil tem uma particularidade.`;
+}
+
 const PERFIS = {
   A: "Gestante Ansiosa",
   B: "Gestante Defensora",
@@ -49,7 +65,8 @@ export async function GET(request) {
   const rows = leads
     .map((l) => {
       const tel = String(l.whatsapp || "").replace(/\D/g, "");
-      const wa = tel ? `https://wa.me/55${tel}` : "";
+      const msg = primeiraMensagem(l);
+      const wa = tel ? `https://wa.me/55${tel}?text=${encodeURIComponent(msg)}` : "";
       const dt = l.created_at
         ? new Date(l.created_at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })
         : "";
@@ -61,7 +78,7 @@ export async function GET(request) {
         <td><span class="perfil p${esc(l.perfil)}">${esc(l.perfil)} · ${esc(PERFIS[l.perfil] || "")}</span></td>
         <td>${esc(l.utms?.utm_source || "")}</td>
         <td class="dt">${esc(dt)}</td>
-        <td>${wa ? `<a class="wa" href="${wa}" target="_blank" rel="noopener">WhatsApp →</a>` : ""}</td>
+        <td>${wa ? `<a class="wa" href="${wa}" target="_blank" rel="noopener">WhatsApp →</a><br/><button class="cp" type="button" data-msg="${esc(msg)}">copiar msg</button>` : ""}</td>
       </tr>`;
     })
     .join("");
@@ -85,6 +102,8 @@ export async function GET(request) {
   .etapa{border-radius:999px;padding:1px 8px;font-size:11px;font-weight:600;color:#333}
   .pA{background:#FFE8CC}.pB{background:#FFD6D6}.pC{background:#E3E8FF}.pD{background:#DDF3DF}
   .wa{color:#1BA05B;font-weight:700;text-decoration:none}
+  .cp{margin-top:5px;font:600 11px system-ui;color:#a66;background:transparent;border:1px solid #e3d3c8;border-radius:999px;padding:2px 9px;cursor:pointer}
+  .cp:hover{background:#a66;color:#fff;border-color:#a66}
   .dt{white-space:nowrap;color:#777;font-size:12px}
   @media(max-width:760px){th:nth-child(2),td:nth-child(2),th:nth-child(5),td:nth-child(5){display:none}}
 </style></head><body>
@@ -94,6 +113,20 @@ export async function GET(request) {
 <thead><tr><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Perfil</th><th>Origem</th><th>Quando</th><th></th></tr></thead>
 <tbody>${rows || `<tr><td colspan="7">Nenhum lead ainda.</td></tr>`}</tbody>
 </table>
+<script>
+document.querySelectorAll("button.cp").forEach(function(b){
+  b.addEventListener("click", function(){
+    var t=b.getAttribute("data-msg");
+    navigator.clipboard.writeText(t).then(function(){
+      b.textContent="copiado \u2713"; setTimeout(function(){b.textContent="copiar msg"},1500);
+    }).catch(function(){
+      var ta=document.createElement("textarea"); ta.value=t; document.body.appendChild(ta);
+      ta.select(); document.execCommand("copy"); ta.remove();
+      b.textContent="copiado \u2713"; setTimeout(function(){b.textContent="copiar msg"},1500);
+    });
+  });
+});
+</script>
 </body></html>`;
 
   return new Response(html, {
