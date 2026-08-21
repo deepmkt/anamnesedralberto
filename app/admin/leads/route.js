@@ -141,6 +141,7 @@ export async function GET(request) {
 <meta name="robots" content="noindex,nofollow"/>
 <title>Leads ao vivo — Parto Sem Medo</title>
 <style>
+  *{box-sizing:border-box}
   body{font-family:system-ui,-apple-system,sans-serif;background:#FAF5F0;color:#2B2B2B;margin:0;padding:24px}
   h1{font-size:20px;margin:0 0 4px}
   .sub{color:#888;font-size:13px;margin-bottom:14px}
