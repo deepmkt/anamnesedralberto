@@ -188,7 +188,7 @@ export async function GET(request) {
   @media(max-width:900px){th:nth-child(5),td:nth-child(5){display:none}}
 </style></head><body>
 <h1>📋 Leads ao vivo — Quiz Parto Sem Medo</h1>
-<div class="sub"><span class="count">${lista.length}</span> gestantes na lista · atualiza sozinho a cada 60s · <a href="/admin/playbook?key=${esc(key)}" style="color:#D96562;font-weight:700">📖 Playbook da SDR</a></div>
+<div class="sub"><span class="count">${lista.length}</span> gestantes na lista · atualiza sozinho a cada 60s · <a href="/admin/playbook?key=${esc(key)}" style="color:#D96562;font-weight:700">📖 Playbook da SDR</a> · <a href="/admin/prompts?key=${esc(key)}" style="color:#D96562;font-weight:700">🎨 Prompts de criativo</a></div>
 <div class="kpis">
   <div class="kpi">💰 Compraram <b>${totais.comprou}</b></div>
   <div class="kpi">💬 Conversando <b>${totais.conversando}</b></div>
