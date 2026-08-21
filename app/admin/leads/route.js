@@ -244,7 +244,7 @@ function msgDaEtiqueta(tr, status){
   if(!g || !g[m[1]]) return null;
   var passo = g[m[1]];
   // na 1ª mensagem vão os dois degraus juntos: entrega + pergunta de 1 toque
-  if(status === "novo" && g[1]) return { rotulo: passo.mecanismo, texto: passo.texto + "\n\n—\n\n" + g[1].texto };
+  if(status === "novo" && g[1]) return { rotulo: passo.mecanismo, texto: passo.texto + "\\n\\n—\\n\\n" + g[1].texto };
   return { rotulo: passo.mecanismo, texto: passo.texto };
 }
 
