@@ -5,12 +5,12 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const EXPORT_KEY = process.env.LEADS_EXPORT_KEY;
 
-const VALIDOS = ["novo", "contatado", "follow_up", "comprou", "sem_interesse"];
+const VALIDOS = ["novo", "contatado", "conversando", "follow_up", "comprou", "sem_interesse", "excluido"];
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { key, phone, status } = body || {};
+    const { key, phone, status, onlyIfNovo } = body || {};
 
     if (!EXPORT_KEY || key !== EXPORT_KEY) {
       return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
@@ -31,6 +31,7 @@ export async function POST(request) {
         p_phone: phone,
         p_status: status,
         p_nota: null,
+        p_only_if_novo: !!onlyIfNovo,
       }),
       cache: "no-store",
     });
