@@ -367,7 +367,6 @@ document.querySelectorAll("button.gt").forEach(function(b){
     dw.scrollTop = 0; ov.classList.add("on");
   });
 });
-});
 </script>
 </body></html>`;
 
