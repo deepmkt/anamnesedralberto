@@ -186,6 +186,32 @@ export async function GET(request) {
   .salvo{position:fixed;right:18px;bottom:18px;background:#166534;color:#fff;font:600 13px system-ui;padding:9px 16px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none}
   .salvo.on{opacity:1}
   @media(max-width:900px){th:nth-child(5),td:nth-child(5){display:none}}
+
+  /* Celular: a tabela vira cartões. Sem isso, o dropdown e os botões
+     ficam fora da tela e o painel não serve pra trabalhar no telefone. */
+  @media(max-width:760px){
+    body{padding:12px}
+    h1{font-size:17px}
+    table{box-shadow:none;background:transparent}
+    thead{display:none}
+    tbody,tr,td{display:block;width:100%}
+    tr{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;
+       box-shadow:0 3px 16px rgba(0,0,0,.06);border:1px solid #f0e4da}
+    td{border:none;padding:0;font-size:14px}
+    td:nth-child(1){font-size:15.5px;margin-bottom:6px}
+    td:nth-child(2){color:#5c534d;margin-bottom:8px}
+    td:nth-child(3){margin-bottom:10px}
+    .sel{width:100%;min-width:0;padding:11px 12px;font-size:14px;text-align:center}
+    td.acoes{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+    .wa{order:1;background:#1BA05B;color:#fff;text-align:center;padding:13px;
+        border-radius:12px;font-size:15.5px}
+    .prox{order:2;max-width:100%;text-align:center;margin:0;font-size:11.5px}
+    .cp{order:3;margin:0;padding:9px;font-size:12.5px;width:100%}
+    .gt{order:4;margin:0;padding:9px;font-size:12.5px;width:100%}
+    .kpis{gap:7px}
+    .kpi{flex:1 1 calc(50% - 4px);padding:8px 10px}
+    .dw{width:100%;padding:16px}
+  }
 </style></head><body>
 <h1>📋 Leads ao vivo — Quiz Parto Sem Medo</h1>
 <div class="sub"><span class="count">${lista.length}</span> gestantes na lista · atualiza sozinho a cada 60s · <a href="/admin/playbook?key=${esc(key)}" style="color:#D96562;font-weight:700">📖 Playbook da SDR</a> · <a href="/admin/prompts?key=${esc(key)}" style="color:#D96562;font-weight:700">🎨 Prompts de criativo</a></div>
