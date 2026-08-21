@@ -146,7 +146,7 @@ const HTML = `<!DOCTYPE html>
     <a href="#etapas">Por etapa do CRM</a>
     <a href="#objecoes">Obje&ccedil;&otilde;es</a>
     <a href="#silencio">Quebra-sil&ecirc;ncio</a>
-    <a href="#cadencia">Follow-up</a>
+    <a href="#cadencia">Cadência 5 dias</a>
   </nav>
 </header>
 
@@ -545,31 +545,101 @@ const HTML = `<!DOCTYPE html>
   </div>
 </section>
 
+
 <section id="cadencia">
-  <h2>Cad&ecirc;ncia: persist&ecirc;ncia gentil, com valor novo</h2>
-  <p class="sub">Cada toque precisa entregar algo &mdash; nunca cobrar. Se a mensagem n&atilde;o tem valor pr&oacute;prio, n&atilde;o mande.</p>
+  <h2>A cadência de 5 dias — persistência que acolhe</h2>
+  <p class="sub">Silêncio não é "não": é vida de gestante acontecendo. A regra de ouro desta sequência é uma só — <strong>cada dia entrega algo novo, nenhum dia cobra</strong>. Se a mensagem não tem valor próprio, ela não sai.</p>
+
+  <div class="mantra">
+    <small>Antes de começar</small>
+    Toda gestante que deixou o WhatsApp levantou a mão. Nossa persistência não é insistência — é cuidado com quem pediu ajuda e a vida atropelou.
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Dia 1 &middot; A história que a faz se reconhecer</h3>
+    <p class="note" style="margin-top:0">Objetivo: sair do "vendedora" e virar "alguém que conhece gente igual a mim". Nada de oferta hoje.</p>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Manhã</span>Oi <span class="var">{nome}</span>, bom dia 💛 Lembrei de você hoje: atendi a Patrícia, que estava exatamente no seu momento. A primeira gestação dela terminou em cesárea sem ela entender direito o que aconteceu — e ela dizia a mesma coisa que você me contou.</div>
+      <div class="msg sdr"><span class="who">Sequência</span>Hoje ela está com 36 semanas e me mandou isso: "pela primeira vez eu me sinto totalmente segura". Não mudou o médico, mudou o preparo dela.</div>
+      <div class="msg sdr"><span class="who">Fecho leve</span>Não vim te cobrar nada, viu? Só achei que a história dela ia te fazer bem 🌷 Como você está se sentindo hoje?</div>
+    </div>
+    <p class="porque">Por que funciona: história de terceiro derruba a defesa. E a pergunta final é sobre ELA, não sobre a compra.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Dia 2 &middot; O presente sem pedir nada em troca</h3>
+    <p class="note" style="margin-top:0">Objetivo: reciprocidade. Entregue uma dica prática de verdade, do perfil dela — e vá embora sem vender.</p>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Perfil A · Ansiosa</span><span class="var">{nome}</span>, uma coisinha prática que o Dr. Alberto ensina e ajuda MUITO quem está ansiosa: escolha uma única pergunta para levar na próxima consulta. Só uma. Essa semana pode ser "o que acontece se eu chegar na maternidade e não for o senhor de plantão?" 💛</div>
+      <div class="msg sdr"><span class="who">Perfil B · Defensora</span><span class="var">{nome}</span>, guarda essa: você pode pedir que TODA intervenção sugerida seja explicada com o motivo e as alternativas, antes de assinar qualquer coisa. Chama-se consentimento informado e é seu direito por lei 💛</div>
+      <div class="msg sdr"><span class="who">Perfil C · Confusa</span><span class="var">{nome}</span>, um filtro que salva: quando ler algo sobre parto, pergunte "quem escreveu isso e com base em quê?". Se não tiver fonte nem nome, ignore. Só isso já elimina 80% do ruído 💛</div>
+      <div class="msg sdr"><span class="who">Perfil D · Quase Pronta</span><span class="var">{nome}</span>, pra quem já estudou como você: acrescente ao seu plano de parto uma linha de "plano B" para cada item. Ex.: "prefiro sem analgesia — se eu pedir, quero que confirmem comigo entre uma contração e outra" 💛</div>
+      <div class="msg sdr"><span class="who">Fecho</span>Só isso mesmo, sem segundas intenções 😊 Se quiser conversar sobre seu resultado, estou por aqui.</div>
+    </div>
+    <p class="porque">Por que funciona: quem recebe algo útil de graça sente vontade natural de retribuir — e passa a te ver como conselheira, não vendedora.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Dia 3 &middot; O áudio — sua voz muda tudo</h3>
+    <p class="note" style="margin-top:0">Objetivo: quebrar a barreira do texto. Áudio de 40 a 60 segundos, falando devagar, sorrindo (dá pra ouvir o sorriso).</p>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Roteiro do áudio (grave, não copie)</span>"Oi {nome}, tudo bem? Aqui é o {sdr}, da equipe do Dr. Alberto. Resolvi mandar áudio porque texto às vezes fica frio, né? Eu vi no seu resultado que seu maior receio é {medo} — e eu queria te dizer que isso é mais comum do que você imagina. A maioria das mulheres que chega até a gente sente exatamente isso. O que muda o jogo não é deixar de sentir medo: é saber o que fazer com ele. Se você quiser, eu te explico em 2 minutos como o método organiza isso pra você. E se não for o momento, tudo bem também — vou torcer por você e pelo seu bebê do mesmo jeito. Um beijo!"</div>
+      <div class="msg sdr"><span class="who">Texto logo depois do áudio</span>(e se preferir por escrito, é só falar que eu mando tudo aqui 💛)</div>
+    </div>
+    <p class="porque">Por que funciona: voz humana cria intimidade que texto não alcança — e o "se não for o momento, tudo bem" tira a pressão e, paradoxalmente, aumenta a resposta.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Dia 4 &middot; A objeção antes de ela precisar dizer</h3>
+    <p class="note" style="margin-top:0">Objetivo: derrubar o motivo silencioso. Se ela não respondeu até aqui, quase sempre é preço, tempo ou dúvida — antecipe os três em um toque.</p>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Abertura honesta</span><span class="var">{nome}</span>, vou ser bem transparente com você. Quando alguém some nessa parte da conversa, quase sempre é por um destes três motivos — e todos têm resposta:</div>
+      <div class="msg sdr"><span class="who">Os três</span>1) "Está caro" → são 12x de R$30,68, menos de R$1 por dia da sua gestação.
+2) "Não vou ter tempo" → as aulas têm 10 a 15 minutos e o acesso vale 2 anos. Dá pra ver na fila do pré-natal.
+3) "E se não servir pra mim?" → 30 dias de garantia incondicional. Você entra, vê tudo, e se não fizer sentido devolvemos 100%.</div>
+      <div class="msg sdr"><span class="who">Devolvendo a decisão</span>Se for algum destes, me diz qual que eu resolvo com você agora. E se for outra coisa, me conta também — prometo escutar sem insistir 💛</div>
+    </div>
+    <p class="porque">Por que funciona: nomear a objeção antes dela reduz a vergonha de admitir ("é caro pra mim"), e a transparência gera reciprocidade de honestidade.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Dia 5 &middot; A despedida que reabre a porta</h3>
+    <p class="note" style="margin-top:0">Objetivo: encerrar com dignidade. É a mensagem com maior taxa de resposta de todo o playbook — justamente porque não pede nada.</p>
+    <div class="chat">
+      <div class="msg sdr"><span class="who">Mensagem final</span><span class="var">{nome}</span>, esse é meu último toque por aqui, tá? 💛 Não quero ser mais uma pessoa enchendo seu WhatsApp numa fase que já é cheia de coisa.</div>
+      <div class="msg sdr"><span class="who">Continuação</span>Vou deixar sua análise guardada comigo. Se um dia — semana que vem ou daqui a dois meses — bater aquela vontade de chegar mais preparada no seu dia, é só me mandar um "oi" que eu retomo exatamente de onde paramos.</div>
+      <div class="msg sdr"><span class="who">Fecho</span>Independente de qualquer coisa, eu vou torcer muito por você e por esse bebê. Que seja um parto lindo e respeitoso 🌷</div>
+    </div>
+    <p class="porque">Por que funciona: a ausência total de pressão devolve a autonomia — e muita gente responde exatamente aqui, porque agora a decisão é 100% dela. Nunca minta: se disse que é o último toque, respeite. Depois disso, só remarketing e nutrição por conteúdo.</p>
+  </div>
+
   <div class="card table-scroll">
+    <h3 style="margin-top:0">Resumo operacional</h3>
     <table>
-      <thead><tr><th>Quando</th><th>O que enviar</th></tr></thead>
+      <thead><tr><th>Quando</th><th>O que sai</th><th>Objetivo</th></tr></thead>
       <tbody>
-        <tr><td>+5 min</td><td>Primeira mensagem, pelo arco do perfil. Lead 🔥 checkout: em at&eacute; 1 hora, sempre.</td></tr>
-        <tr><td>+2 h</td><td>"Oi <span class="var">{nome}</span>! Ficou alguma d&uacute;vida sobre seu resultado? Estou por aqui 💛"</td></tr>
-        <tr><td>Dia 1</td><td>Valor novo: hist&oacute;ria da Patr&iacute;cia (mesma fase que ela, se poss&iacute;vel) + "me lembrou muito voc&ecirc;".</td></tr>
-        <tr><td>Dia 3</td><td>&Aacute;udio curto e humano: retome o medo principal dela + 1 dica pr&aacute;tica + oferta com garantia na frente.</td></tr>
-        <tr><td>Dia 7</td><td>Despedida com carinho: "Vou deixar seu resultado guardado aqui, t&aacute;? Se quiser retomar, &eacute; s&oacute; me chamar. Torcendo por voc&ecirc; e pelo beb&ecirc; 💛" &mdash; e marque como frio no CRM.</td></tr>
+        <tr><td>+5 min</td><td>Primeira mensagem pelo arco do perfil <em>(o botão do CRM já abre pronta)</em></td><td>Reconhecimento</td></tr>
+        <tr><td>+2 h</td><td>"Ficou alguma dúvida sobre seu resultado? Estou por aqui 💛"</td><td>Presença</td></tr>
+        <tr><td>Dia 1</td><td>História da Patrícia + "como você está hoje?"</td><td>Identificação</td></tr>
+        <tr><td>Dia 2</td><td>Dica prática do perfil dela, sem vender</td><td>Reciprocidade</td></tr>
+        <tr><td>Dia 3</td><td>Áudio de 40-60s com a voz da SDR</td><td>Intimidade</td></tr>
+        <tr><td>Dia 4</td><td>As três objeções antecipadas + garantia</td><td>Remoção de risco</td></tr>
+        <tr><td>Dia 5</td><td>Despedida com porta aberta</td><td>Autonomia</td></tr>
+        <tr><td>Depois</td><td>Marcar 🔁 Follow-up ou ✖️ no painel e deixar o remarketing trabalhar</td><td>Higiene</td></tr>
       </tbody>
     </table>
   </div>
+
   <div class="alert" style="margin-top:16px">
-    <b>Higiene de CRM</b>
-    Toda conversa termina com o card atualizado no Deep OS: est&aacute;gio novo, uma linha de anota&ccedil;&atilde;o ("obje&ccedil;&atilde;o: pre&ccedil;o; quer falar com marido; follow D3") e a pr&oacute;xima tarefa criada. Card sem anota&ccedil;&atilde;o &eacute; venda que a pr&oacute;xima colega n&atilde;o consegue continuar.
+    <b>Higiene de CRM — faça em cada toque</b>
+    O painel já marca <b>✅ 1º contato realizado</b> quando você clica em WhatsApp. Depois da conversa, atualize com <b>💰 Comprou</b>, <b>🔁 Follow-up</b> (segue na cadência) ou <b>✖️ Sem interesse</b> (sai da fila). Etiqueta em dia é o que impede duas pessoas falarem com a mesma gestante — e o que mostra, no fim do mês, quanto o funil realmente vendeu.
   </div>
 
   <div class="mantra" style="margin-top:26px">
     <small>Para lembrar antes de cada conversa</small>
-    Do outro lado n&atilde;o tem um lead. Tem uma mulher com medo, carregando uma vida dentro dela.<br>
-    Se voc&ecirc; a fizer se sentir capaz, ela compra. Se voc&ecirc; a fizer se sentir pressionada, ela some.<br>
-    <strong>Acolher &eacute; a estrat&eacute;gia &mdash; e tamb&eacute;m &eacute; a coisa certa a fazer.</strong>
+    Do outro lado não tem um lead. Tem uma mulher com medo, carregando uma vida dentro dela.<br>
+    Se você a fizer se sentir capaz, ela compra. Se você a fizer se sentir pressionada, ela some.<br>
+    <strong>Acolher é a estratégia — e também é a coisa certa a fazer.</strong>
   </div>
 </section>
 
