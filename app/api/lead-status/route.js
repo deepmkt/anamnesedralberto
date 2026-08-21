@@ -5,7 +5,11 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const EXPORT_KEY = process.env.LEADS_EXPORT_KEY;
 
-const VALIDOS = ["novo", "contatado", "conversando", "follow_up", "comprou", "sem_interesse", "excluido"];
+const VALIDOS = [
+  "novo", "contatado",
+  "follow_1", "follow_2", "follow_3", "follow_4", "follow_5",
+  "conversando", "comprou", "sem_interesse", "excluido",
+];
 
 export async function POST(request) {
   try {
